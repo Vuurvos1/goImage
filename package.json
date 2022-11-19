@@ -1,0 +1,10 @@
+{
+  "main": "main.go",
+  "scripts": {
+    "build": "go build -o build/goImage.exe",
+    "dev": "nodemon --exec go run main.go --signal SIGTERM"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
