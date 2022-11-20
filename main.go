@@ -22,7 +22,10 @@ func main() {
 	win := a.NewWindow("Layout")
 	win.Resize(fyne.NewSize(800, 600))
 
-	img := canvas.NewImageFromFile("example.png")
+	img := &canvas.Image{}
+	vBox := &fyne.Container{}
+
+	img = canvas.NewImageFromFile("example.png")
 	img.FillMode = canvas.ImageFillOriginal
 
 	toolbar := widget.NewToolbar(
@@ -62,18 +65,17 @@ func main() {
 			// get the size
 			size := fi.Size()
 
-			fmt.Println(size)
-
 			// file path | x/x file(s) | zoom % 00,00% | 00 x 00 px | 0,0 kB/MB | date (m) - app name
 			title := filename + " | " + strconv.Itoa(imgFile.Width) + " x " + strconv.Itoa(imgFile.Height) + " px" + " | " + formatFileSize(size) + " - Go Image"
-			fmt.Println(title)
 			win.SetTitle(title)
 
-			// img.Resource(file)
-			// fmt.Println(img.Image.Bounds())
-			// img = canvas.NewImageFromFile(filename)
+			// TODO: switch to a better image decoder that supports more image types like webp
+			img = canvas.NewImageFromFile(filename)
+			img.FillMode = canvas.ImageFillOriginal
+			vBox.Objects[2] = img
 
-			img.Refresh()
+			// img.Refresh()
+			vBox.Refresh()
 		}),
 
 		widget.NewToolbarSeparator(),
@@ -89,9 +91,7 @@ func main() {
 		}),
 	)
 
-	// hBox := container.New(layout.NewHBoxLayout(), text1, text2, text3)
-	// vBox := container.New(layout.NewVBoxLayout(), hBox, widget.NewSeparator(), img)
-	vBox := container.New(layout.NewVBoxLayout(), toolbar, widget.NewSeparator(), img)
+	vBox = container.New(layout.NewVBoxLayout(), toolbar, widget.NewSeparator(), img)
 
 	win.SetContent(vBox)
 	win.ShowAndRun()
