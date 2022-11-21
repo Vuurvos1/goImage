@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"image"
+	"log"
 	"os"
 	"strconv"
 
@@ -15,6 +16,9 @@ import (
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
+
+	_ "golang.org/x/image/tiff"
+	_ "golang.org/x/image/webp"
 )
 
 func main() {
@@ -46,31 +50,34 @@ func main() {
 
 		widget.NewToolbarAction(theme.UploadIcon(), func() {
 			// TODO: add and test more image types like gifs and webp
-			filename, _ := dialog.File().Filter("Open image", "BMP;*.bmp;GIF;*.gif;JPG;*.jpg;*.jpeg;PNG;*.png;TIFF;*.tif;*.tiff").Load()
+			filename, _ := dialog.File().Filter("Open image", "WEBP;*.webp;BMP;*.bmp;JPG;*.jpg;*.jpeg;PNG;*.png;TIFF;*.tif;*.tiff").Load()
 
 			file, err := os.Open(filename)
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "%v\n", err)
+				log.Fatal(err)
+			}
+			defer file.Close()
+
+			imgData, imgType, err := image.Decode(file)
+			if err != nil {
+				log.Fatal(err)
 			}
 
-			imgFile, _, err := image.DecodeConfig(file)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "%s: %v\n", filename, err)
-			}
+			fmt.Println(imgType)
 
 			fi, err := file.Stat()
 			if err != nil {
-				fmt.Println(err)
+				log.Fatal(err)
 			}
 			// get the size
 			size := fi.Size()
 
 			// file path | x/x file(s) | zoom % 00,00% | 00 x 00 px | 0,0 kB/MB | date (m) - app name
-			title := filename + " | " + strconv.Itoa(imgFile.Width) + " x " + strconv.Itoa(imgFile.Height) + " px" + " | " + formatFileSize(size) + " - Go Image"
+			title := filename + " | " + strconv.Itoa(imgData.Bounds().Dx()) + " x " + strconv.Itoa(imgData.Bounds().Dy()) + " px" + " | " + formatFileSize(size) + " - Go Image"
 			win.SetTitle(title)
 
 			// TODO: switch to a better image decoder that supports more image types like webp
-			img = canvas.NewImageFromFile(filename)
+			img = canvas.NewImageFromImage(imgData)
 			img.FillMode = canvas.ImageFillOriginal
 			vBox.Objects[2] = img
 
@@ -92,6 +99,14 @@ func main() {
 	)
 
 	vBox = container.New(layout.NewVBoxLayout(), toolbar, widget.NewSeparator(), img)
+
+	win.Canvas().SetOnTypedKey(func(k *fyne.KeyEvent) {
+		// fmt.Println(k)
+
+		if k.Name == "Escape" {
+			win.Close()
+		}
+	})
 
 	win.SetContent(vBox)
 	win.ShowAndRun()
