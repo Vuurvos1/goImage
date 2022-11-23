@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"image"
-	"log"
 	"os"
 	"strconv"
 
@@ -23,14 +22,41 @@ import (
 
 func main() {
 	a := app.New()
-	win := a.NewWindow("Layout")
+	win := a.NewWindow("Go Image")
 	win.Resize(fyne.NewSize(800, 600))
+
+	// TODO: remove shadow color from theme (make transparent)
+	// theme.ShadowColor(color.RGBA{85, 165, 34, 255})
 
 	img := &canvas.Image{}
 	vBox := &fyne.Container{}
 
 	img = canvas.NewImageFromFile("example.png")
 	img.FillMode = canvas.ImageFillOriginal
+
+	pMenu := widget.NewPopUpMenu(fyne.NewMenu("Main menu",
+		fyne.NewMenuItem("File", func() {}),
+		fyne.NewMenuItemSeparator(),
+		fyne.NewMenuItem("Navigation", func() {}),
+		fyne.NewMenuItem("Zoom", func() {}),
+		fyne.NewMenuItem("Image", func() {}),
+		fyne.NewMenuItem("Clipboard", func() {}),
+		fyne.NewMenuItemSeparator(),
+		fyne.NewMenuItem("Window fit", func() {}),
+		fyne.NewMenuItem("Frameless", func() {}),
+		fyne.NewMenuItem("Full screen", func() {}),
+		fyne.NewMenuItem("Slideshow", func() {}),
+		fyne.NewMenuItemSeparator(),
+		fyne.NewMenuItem("Layout", func() {}),
+		fyne.NewMenuItem("Tools", func() {}),
+		fyne.NewMenuItemSeparator(),
+		fyne.NewMenuItem("Settings...", func() {}),
+		fyne.NewMenuItem("Help", func() {}),
+		fyne.NewMenuItemSeparator(),
+		fyne.NewMenuItem("Exit", func() {}),
+	),
+		win.Canvas(),
+	)
 
 	toolbar := widget.NewToolbar(
 		widget.NewToolbarSpacer(),
@@ -54,20 +80,18 @@ func main() {
 
 			file, err := os.Open(filename)
 			if err != nil {
-				log.Fatal(err)
+				fyne.LogError("Could not open file", err)
 			}
 			defer file.Close()
 
 			imgData, imgType, err := image.Decode(file)
 			if err != nil {
-				log.Fatal(err)
+				fyne.LogError("Could not decode "+imgType+" image", err)
 			}
-
-			fmt.Println(imgType)
 
 			fi, err := file.Stat()
 			if err != nil {
-				log.Fatal(err)
+				fyne.LogError("Could get file stats", err)
 			}
 			// get the size
 			size := fi.Size()
@@ -95,6 +119,10 @@ func main() {
 
 		widget.NewToolbarAction(theme.MenuIcon(), func() {
 			fmt.Println("Display help")
+			// TODO: better calculate y offset / make relative to image container?
+			bounds := win.Canvas().Capture().Bounds()
+			pMenu.ShowAtPosition(fyne.NewPos(float32(bounds.Dx()), 45.0))
+			pMenu.Show()
 		}),
 	)
 
