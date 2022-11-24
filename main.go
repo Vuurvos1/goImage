@@ -43,7 +43,9 @@ func main() {
 
 	ui := &App{app: a, mainWin: win}
 	ui.init()
+
 	ui.loadMainUI()
+	pMenu := ui.loadMainMenu()
 	// w.SetContent(ui.loadMainUI())
 
 	// TODO: remove shadow color from theme (make transparent)
@@ -54,30 +56,6 @@ func main() {
 
 	img = canvas.NewImageFromFile("example.png")
 	img.FillMode = canvas.ImageFillOriginal
-
-	pMenu := widget.NewPopUpMenu(fyne.NewMenu("Main menu",
-		fyne.NewMenuItem("File", func() {}),
-		fyne.NewMenuItemSeparator(),
-		fyne.NewMenuItem("Navigation", func() {}),
-		fyne.NewMenuItem("Zoom", func() {}),
-		fyne.NewMenuItem("Image", func() {}),
-		fyne.NewMenuItem("Clipboard", func() {}),
-		fyne.NewMenuItemSeparator(),
-		fyne.NewMenuItem("Window fit		F9", func() {}),
-		fyne.NewMenuItem("Frameless			F10", func() {}),
-		fyne.NewMenuItem("Full screen		F11", func() {}),
-		fyne.NewMenuItem("Slideshow", func() {}),
-		fyne.NewMenuItemSeparator(),
-		fyne.NewMenuItem("Layout", func() {}),
-		fyne.NewMenuItem("Tools", func() {}),
-		fyne.NewMenuItemSeparator(),
-		fyne.NewMenuItem("Settings… Ctrl + Shift + p", func() {}),
-		fyne.NewMenuItem("Help", func() {}),
-		fyne.NewMenuItemSeparator(),
-		fyne.NewMenuItem("Exit		Shift + ESC", func() {}),
-	),
-		win.Canvas(),
-	)
 
 	toolbar := widget.NewToolbar(
 		widget.NewToolbarSpacer(),
