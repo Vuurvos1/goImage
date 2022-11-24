@@ -54,7 +54,25 @@ func main() {
 	img := &canvas.Image{}
 	vBox := &fyne.Container{}
 
-	img = canvas.NewImageFromFile("example.png")
+	if len(os.Args) > 1 {
+		file, err := os.Open(os.Args[1])
+		if err != nil {
+			fmt.Printf("error while opening the file: %v\n", err)
+		}
+
+		imgData, imgType, err := image.Decode(file)
+		if err != nil {
+			fyne.LogError("Could not decode "+imgType+" image", err)
+		}
+
+		// ui.open(file, true)
+		img = canvas.NewImageFromImage(imgData)
+
+	} else {
+		img = canvas.NewImageFromFile("example.png")
+
+	}
+
 	img.FillMode = canvas.ImageFillOriginal
 
 	toolbar := widget.NewToolbar(

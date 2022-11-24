@@ -7,8 +7,6 @@ import (
 )
 
 func (a *App) loadShortCuts() {
-	fmt.Println("load shortcuts")
-
 	a.mainWin.Canvas().SetOnTypedKey(func(k *fyne.KeyEvent) {
 		fmt.Println(k)
 
