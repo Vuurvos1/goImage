@@ -12,6 +12,7 @@ import (
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/driver/desktop"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
@@ -20,10 +21,30 @@ import (
 	_ "golang.org/x/image/webp"
 )
 
+// App represents the whole application with all its windows, widgets and functions
+type App struct {
+	app     fyne.App
+	mainWin fyne.Window
+
+	mainModKey desktop.Modifier
+
+	image *canvas.Image
+}
+
+func (a *App) init() {
+	// set app initial values
+
+	// TODO: set main command key (ctrl / cmd/super/option)
+}
+
 func main() {
 	a := app.New()
 	win := a.NewWindow("Go Image")
-	win.Resize(fyne.NewSize(800, 600))
+
+	ui := &App{app: a, mainWin: win}
+	ui.init()
+	ui.loadMainUI()
+	// w.SetContent(ui.loadMainUI())
 
 	// TODO: remove shadow color from theme (make transparent)
 	// theme.ShadowColor(color.RGBA{85, 165, 34, 255})
@@ -42,18 +63,18 @@ func main() {
 		fyne.NewMenuItem("Image", func() {}),
 		fyne.NewMenuItem("Clipboard", func() {}),
 		fyne.NewMenuItemSeparator(),
-		fyne.NewMenuItem("Window fit", func() {}),
-		fyne.NewMenuItem("Frameless", func() {}),
-		fyne.NewMenuItem("Full screen", func() {}),
+		fyne.NewMenuItem("Window fit		F9", func() {}),
+		fyne.NewMenuItem("Frameless			F10", func() {}),
+		fyne.NewMenuItem("Full screen		F11", func() {}),
 		fyne.NewMenuItem("Slideshow", func() {}),
 		fyne.NewMenuItemSeparator(),
 		fyne.NewMenuItem("Layout", func() {}),
 		fyne.NewMenuItem("Tools", func() {}),
 		fyne.NewMenuItemSeparator(),
-		fyne.NewMenuItem("Settings...", func() {}),
+		fyne.NewMenuItem("Settings… Ctrl + Shift + p", func() {}),
 		fyne.NewMenuItem("Help", func() {}),
 		fyne.NewMenuItemSeparator(),
-		fyne.NewMenuItem("Exit", func() {}),
+		fyne.NewMenuItem("Exit		Shift + ESC", func() {}),
 	),
 		win.Canvas(),
 	)
@@ -127,16 +148,9 @@ func main() {
 	)
 
 	vBox = container.New(layout.NewVBoxLayout(), toolbar, widget.NewSeparator(), img)
-
-	win.Canvas().SetOnTypedKey(func(k *fyne.KeyEvent) {
-		// fmt.Println(k)
-
-		if k.Name == "Escape" {
-			win.Close()
-		}
-	})
-
 	win.SetContent(vBox)
+
+	win.Resize(fyne.NewSize(800, 600))
 	win.ShowAndRun()
 }
 

@@ -9,3 +9,9 @@ A Blazingly™ Fast image viewer build using go 🔥
 - webp
 - tif
 - bmp
+
+## Dev reload mode
+
+```bash
+pnpm nodemon --watch './**/*.go' --signal SIGTERM --exec 'go' run *.go
+```
