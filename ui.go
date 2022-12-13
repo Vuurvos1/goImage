@@ -23,9 +23,9 @@ func (a *App) loadMainMenu() widget.PopUpMenu {
 	navMenu := fyne.NewMenuItem("Navigation", func() {})
 	navMenu.ChildMenu = fyne.NewMenu("",
 		fyne.NewMenuItem("View next image 	 Right Arrow / PageDown", func() {}),
-		fyne.NewMenuItem("View previous image		Left Arrow / PageUp", func() {}),
+		fyne.NewMenuItem("View previous image	 Left Arrow / PageUp", func() {}),
 		fyne.NewMenuItemSeparator(),
-		fyne.NewMenuItem("Go to																	G", func() {}),
+		fyne.NewMenuItem("Go to																  G", func() {}),
 		fyne.NewMenuItem("Go to the first image 		Home", func() {}),
 		fyne.NewMenuItem("Go to the last image			End", func() {}),
 		fyne.NewMenuItemSeparator(),
@@ -37,17 +37,17 @@ func (a *App) loadMainMenu() widget.PopUpMenu {
 
 	zoomMenu := fyne.NewMenuItem("Zoom", func() {})
 	zoomMenu.ChildMenu = fyne.NewMenu("",
-		fyne.NewMenuItem("Zoom in			+", func() {}),
-		fyne.NewMenuItem("Zoom out			-", func() {}),
+		fyne.NewMenuItem("Zoom in						+", func() {}),
+		fyne.NewMenuItem("Zoom out					-", func() {}),
 		fyne.NewMenuItem("Custom zoom			Z", func() {}),
-		fyne.NewMenuItem("Actual size		0", func() {}),
+		fyne.NewMenuItem("Actual size					0", func() {}),
 		fyne.NewMenuItemSeparator(),
-		fyne.NewMenuItem("Auto zoom			1", func() {}),
-		fyne.NewMenuItem("Lock zoom ratio			2", func() {}),
+		fyne.NewMenuItem("Auto zoom					1", func() {}),
+		fyne.NewMenuItem("Lock zoom ratio		2", func() {}),
 		fyne.NewMenuItem("Scale to width			3", func() {}),
 		fyne.NewMenuItem("Scale to height			4", func() {}),
-		fyne.NewMenuItem("Scale to fit			5", func() {}),
-		fyne.NewMenuItem("Scale to fill			6", func() {}),
+		fyne.NewMenuItem("Scale to fit					5", func() {}),
+		fyne.NewMenuItem("Scale to fill					6", func() {}),
 	)
 
 	mainMenu := widget.NewPopUpMenu(fyne.NewMenu("",
@@ -69,7 +69,7 @@ func (a *App) loadMainMenu() widget.PopUpMenu {
 		fyne.NewMenuItem("Settings… Ctrl + Shift + P", func() {}),
 		fyne.NewMenuItem("Help", func() {}),
 		fyne.NewMenuItemSeparator(),
-		fyne.NewMenuItem("Exit		Shift + ESC", func() {}),
+		fyne.NewMenuItem("Exit		ESC", func() {}),
 	),
 		a.mainWin.Canvas(),
 	)

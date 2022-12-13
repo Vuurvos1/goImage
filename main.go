@@ -93,7 +93,11 @@ func main() {
 
 		widget.NewToolbarAction(theme.UploadIcon(), func() {
 			// TODO: add and test more image types like gifs and webp
+			// filename, _ := dialog.File().Filter("Open image", "*").Load()
 			filename, _ := dialog.File().Filter("Open image", "WEBP;*.webp;BMP;*.bmp;JPG;*.jpg;*.jpeg;PNG;*.png;TIFF;*.tif;*.tiff").Load()
+			if filename == "" {
+				return
+			}
 
 			file, err := os.Open(filename)
 			if err != nil {
