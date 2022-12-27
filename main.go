@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"image"
+	"image/color"
 	"os"
 	"strconv"
 
@@ -26,9 +27,13 @@ type App struct {
 	app     fyne.App
 	mainWin fyne.Window
 
+	canvasContainer *fyne.Container
+
 	mainModKey desktop.Modifier
 
-	image *canvas.Image
+	img          *canvas.Image
+	image        *canvas.Image
+	imgContainer *fyne.Container
 }
 
 func (a *App) init() {
@@ -36,6 +41,14 @@ func (a *App) init() {
 
 	// TODO: set main command key (ctrl / cmd/super/option)
 }
+
+type CustomCanvas struct {
+	fyne.Canvas
+}
+
+// func (img *CustomImage) MouseMoved(e *desktop.MouseEvent) {
+// 	fmt.Println(e.AbsolutePosition)
+// }
 
 func main() {
 	a := app.New()
@@ -53,6 +66,8 @@ func main() {
 
 	img := &canvas.Image{}
 	vBox := &fyne.Container{}
+
+	ui.img = img
 
 	if len(os.Args) > 1 {
 		file, err := os.Open(os.Args[1])
@@ -147,12 +162,83 @@ func main() {
 		}),
 	)
 
-	vBox = container.New(layout.NewVBoxLayout(), toolbar, widget.NewSeparator(), img)
+	bg := canvas.NewRasterWithPixels(bgPattern)
+	// tmp.Resize(fyne.NewSize(100, 100))
+
+	rect := canvas.NewRectangle(color.Black)
+	// rect.Resize()
+
+	max := container.NewMax(rect)
+	max.Resize(fyne.NewSize(100, 100))
+
+	// bg
+
+	ui.imgContainer = container.NewWithoutLayout(bg, img)
+	// ui.imgContainer = container.NewWithoutLayout(bg)
+
+	// l.Move()
+
+	bg.Move(fyne.NewPos(-4, -5))
+	bg.Resize(fyne.NewSize(1000, 1000))
+
+	img.Move(fyne.NewPos(100, 0))
+	img.Resize(fyne.NewSize(200, 200))
+
+	// c := container.NewCenter(tmp, rect)
+	// c.Resize(fyne.NewSize(100, 100))
+	vBox = container.New(layout.NewVBoxLayout(), toolbar, widget.NewSeparator(), ui.imgContainer)
+
+	// container.NewMax()
+	// ui.canvasContainer = container.New(layout.NewVBoxLayout(), toolbar, widget.NewSeparator(), img)
+	// vBox = a.cav container.New(layout.NewVBoxLayout(), toolbar, widget.NewSeparator(), img)
+
+	// fmt.Println(vBox.Size())
+
+	// canvas.NewRasterWithPixels(x, y, w,h )
+
+	// rows := 100
+	// cols := 100
+
+	// light := color.NRGBA{R: 0x49, G: 0x4B, B: 0x4C, A: 0xff} // #494B4C
+	// dark := color.NRGBA{R: 0x37, G: 0x38, B: 0x39, A: 0xff}  // #373839
+
+	// for i := 0; i < 10; i++ {
+	// 	for j := 0; j < 10; j++ {
+	// 		canvas.NewRectangle(light)
+
+	// 		if i%2 == j%2 {
+	// 			canvas.NewRectangle(dark)
+	// 		}
+	// 	}
+	// }
+
+	ui.canvasContainer = vBox
+	// a.canvasContainer =
+
+	// fmt.Println(win.Content().Size())
+
+	// box := container.NewWithoutLayout(image)
+	// content := &CustomImage{*box}
+
+	// win.SetContent(ui.canvasContainer)
 	win.SetContent(vBox)
 
 	win.Resize(fyne.NewSize(800, 600))
+
 	win.ShowAndRun()
 }
+
+// type tappableCanvasObject struct {
+// 	fyne.CanvasObject
+// 	OnTapped func()
+// }
+
+// func (a *vBox) Tapped(e *fyne.PointEvent) {
+// 	print("penis")
+// 	fmt.Println(e.Position)
+// 	fmt.Println(e.AbsolutePosition)
+// 	// print(e.AbsolutePosition)
+// }
 
 func formatFileSize(b int64) string {
 	const unit = 1024
@@ -166,4 +252,14 @@ func formatFileSize(b int64) string {
 		exp++
 	}
 	return fmt.Sprintf("%.1f %cB", float64(b)/float64(div), "kMGTPE"[exp])
+}
+
+func bgPattern(x, y, _, _ int) color.Color {
+	const boxSize = 8
+
+	if (x/boxSize)%2 == (y/boxSize)%2 {
+		return color.Gray{Y: 58}
+	}
+
+	return color.Gray{Y: 84}
 }
